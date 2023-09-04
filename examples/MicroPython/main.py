@@ -12,7 +12,7 @@ PASSWORD = "wifi pass"
 
 # MQTT Server Parameters
 MQTT_CLIENT_ID = "promake-demo"
-MQTT_BROKER    = "test.mosquitto.org"
+MQTT_BROKER    = "192.168.1.104"
 MQTT_USER      = ""
 MQTT_PASSWORD  = ""
 MQTT_TOPIC     = "v1/devices/me/telemetry"
