@@ -15,7 +15,7 @@ MQTT_CLIENT_ID = "promake-demo"
 MQTT_BROKER    = "test.mosquitto.org"
 MQTT_USER      = ""
 MQTT_PASSWORD  = ""
-MQTT_TOPIC     = "promake/receive"
+MQTT_TOPIC     = "v1/devices/me/telemetry"
 
 wlan_sta = network.WLAN(network.STA_IF)
 wlan_sta.active(True)
@@ -36,15 +36,11 @@ relay_pin.off()
 timer = Timer(0)
 
 def sub_callback(topic, msg):
-  # print((topic, msg))
-  str_msg = msg.decode('utf-8')
-  if str_msg == "on":
-    relay_pin.on()
-  elif str_msg == "off":
-    relay_pin.off()
+  print((topic, msg))
+  
     
 def connect_and_subscribe():
-  client = MQTTClient(MQTT_CLIENT_ID, MQTT_BROKER)
+  client = MQTTClient(MQTT_CLIENT_ID, MQTT_BROKER,user=MQTT_USER,password=MQTT_PASSWORD)
   client.set_callback(sub_callback)
   client.connect()
   client.subscribe(MQTT_TOPIC)
@@ -65,8 +61,7 @@ def get_states(timer):
   dht11.measure()
   temp = dht11.temperature()
   humidity = dht11.humidity()
-  client.publish('promake/temp',str(temp))
-  client.publish('promake/humidity',str(humidity))
+  client.publish(MQTT_TOPIC,ujson.dumps({"temperature":temp,"humidity":humidity}))
   
 
 timer.init(period=3000, callback=get_states)
